@@ -32,7 +32,10 @@
       "register": "middle",
       "time_signature": "4/4",
       "lick_data": [
-        {"tab": "4", "duration": 1}, {"tab": "5", "duration": 1}, {"tab": "-4", "duration": 2}
+        {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5}, {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5},
+        {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5}, {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5},
+        {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5}, {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5},
+        {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5}, {"tab": "-4", "duration": 0.5}, {"tab": "-5", "duration": 0.5}
       ]
     }
   ]
