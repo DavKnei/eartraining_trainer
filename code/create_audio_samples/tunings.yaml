@@ -11,6 +11,7 @@
 
 tunings:
   # Richter Tuning is the standard, most common layout for 10-hole diatonic harmonicas.
+  # Note currently the software can not handle overblows and overdraws.
   richter:
     # The keys '1' through '10' represent the physical holes on the harmonica.
     1:
@@ -50,7 +51,7 @@ tunings:
     10:
       blow: 36     # The root note, three octaves up.
       draw: 35
-      bends: [-1]
+
   
   # Add a new tuning here in the future by following the same structure.
   # For example:
