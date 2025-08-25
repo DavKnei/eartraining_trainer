@@ -1,13 +1,6 @@
 {
   "licks": [
     {
-      "register": "full_scale",
-      "time_signature": "4/4",
-      "lick_data": [
-        {"tab": "-2", "duration": 1}, {"tab": "-3_p", "duration": 1}, {"tab": "4", "duration": 1}, {"tab": "-4_p", "duration": 1}, {"tab": "-4", "duration": 1}, {"tab": "-5", "duration": 1}, {"tab": "6", "duration": 1}, {"tab": "7", "duration": 1}, {"tab": "-8", "duration": 1}, {"tab": "-9", "duration": 1}, {"tab": "9", "duration": 1}
-      ]
-    },
-    {
       "register": "low",
       "time_signature": "4/4",
       "lick_data": [
@@ -26,6 +19,20 @@
       "time_signature": "4/4",
       "lick_data": [
         {"tab": "6", "duration": 1}, {"tab": "7", "duration": 1}, {"tab": "-8", "duration": 1}, {"tab": "-9", "duration": 1}, {"tab": "9", "duration": 1}
+      ]
+    },
+    {
+      "register": "middle",
+      "time_signature": "4/4",
+      "lick_data": [
+        {"tab": "4", "duration": 1}, {"tab": "-3_p", "duration": 1}, {"tab": "-2", "duration": 2}
+      ]
+    },
+    {
+      "register": "high",
+      "time_signature": "4/4",
+      "lick_data": [
+        {"tab": "6", "duration": 1}, {"tab": "-5", "duration": 1}, {"tab": "-4", "duration": 1}, {"tab": "4", "duration": 1}
       ]
     }
   ]
