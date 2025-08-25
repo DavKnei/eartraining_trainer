@@ -9,7 +9,6 @@ This tool aims to help harmonica players improve their ear by providing exercise
 ## Core Features ✨
 
 * **Lick & Scale Playback:** Load and play pre-defined musical licks or entire scales.
-* **Authentic Sound:** Uses real audio samples from a diatonic harmonica for a realistic training experience.
 * **Variable Speed (BPM):** Adjust the playback speed to practice at your own pace, from slow and deliberate to performance speed.
 * **Interactive Controls:** Loop a tricky phrase, replay the last lick, or reveal the tablature when you're stuck.
 * **Position Focused:** Licks and scales are designed around common harmonica positions (e.g., 2nd position blues scale).
