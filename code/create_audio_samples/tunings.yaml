@@ -1,0 +1,60 @@
+# Harmonica Tuning Layouts
+# -------------------------
+# This file defines the note layout for different harmonica tunings.
+# All numerical values represent a 'semitone offset' from the harmonica's root key.
+# A semitone is the smallest interval in Western music (e.g., from C to C#).
+#
+# Example on a C Harmonica:
+#   - A value of 0  = C (the root note)
+#   - A value of 2  = D (2 semitones above C)
+#   - A value of 12 = C (12 semitones, or one full octave, higher)
+
+tunings:
+  # Richter Tuning is the standard, most common layout for 10-hole diatonic harmonicas.
+  richter:
+    # The keys '1' through '10' represent the physical holes on the harmonica.
+    1:
+      blow: 0      # The blow note is the root note of the key.
+      draw: 2      # The draw note is 2 semitones above the root.
+      bends: [-1]  # A single draw bend is possible, 1 semitone flat from the natural draw note (value 2).
+    2:
+      blow: 4
+      draw: 7
+      bends: [-1, -2] # Two draw bends are possible on this hole (a half step and a whole step flat).
+    3:
+      blow: 7
+      draw: 11
+      # The 3-hole draw has three possible bends, each a semitone lower than the last.
+      bends: [-1, -2, -3]
+    4:
+      blow: 12     # The root note, one octave up from hole 1 blow.
+      draw: 14
+      bends: [-1]
+    5:
+      blow: 16
+      draw: 18
+      # No natural bends are possible on hole 5 in Richter tuning.
+    6:
+      blow: 19
+      draw: 21
+      bends: [-1]
+    7:
+      blow: 24     # The root note, two octaves up.
+      draw: 23     # NOTE: In the high register (holes 7-10), the draw note is lower than the blow note.
+    8:
+      blow: 28
+      draw: 26
+    9:
+      blow: 31
+      draw: 30
+    10:
+      blow: 36     # The root note, three octaves up.
+      draw: 35
+      bends: [-1]
+  
+  # Add a new tuning here in the future by following the same structure.
+  # For example:
+  # wilde_tuning:
+  #   1:
+  #     blow: 0
+  #     ...etc
