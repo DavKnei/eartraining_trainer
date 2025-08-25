@@ -39,3 +39,6 @@ __pycache__/
 
 ## All figures 
 *.png
+
+## temp music files
+*.musicxml
