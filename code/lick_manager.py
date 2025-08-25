@@ -59,54 +59,30 @@ class LickManager:
             return self.licks[index]
         return None
 
-    def get_combined_scale_for_registers(self, registers):
+    def get_random_lick(self, register="all"):
         """
-        Combines multiple scale parts into a single lick object for display.
-        
-        Parameters
-        ----------
-        registers : list
-            A list of register names to combine (e.g., ['low', 'middle']).
+        Returns a random practice lick and its original index, optionally
+        filtered by register.
 
         Returns
         -------
-        dict or None
-            A lick object containing the combined lick_data.
-        """
-        combined_data = []
-        for i, reg in enumerate(registers):
-            scale_part = self.get_scale_by_register(reg)
-            if scale_part:
-                combined_data.extend(scale_part['lick_data'])
-                # Add a separator rest between scale parts, but not after the last one
-                if i < len(registers) - 1:
-                    combined_data.append({"tab": "rest", "duration": 4}) # Whole note rest
-        
-        if not combined_data:
-            return None
-            
-        return {
-            "register": ", ".join(registers),
-            "time_signature": "4/4", # A nominal time signature for generation
-            "lick_data": combined_data
-        }
-
-
-    def get_random_lick(self, register="all"):
-        """
-        Returns a random practice lick, optionally filtered by register.
+        tuple or None
+            A tuple containing the lick object and its index, or None.
         """
         if len(self.licks) <= 3:
             return None 
 
-        selectable_licks = self.licks[3:]
-        if not selectable_licks:
+        selectable_licks_with_indices = list(enumerate(self.licks))[3:]
+        if not selectable_licks_with_indices:
             return None
 
         if register != "all":
-            filtered_licks = [lick for lick in selectable_licks if lick.get("register") == register]
+            filtered_licks = [(i, lick) for i, lick in selectable_licks_with_indices if lick.get("register") == register]
             if not filtered_licks:
                 return None 
-            return random.choice(filtered_licks)
+            
+            original_index, lick_obj = random.choice(filtered_licks)
+            return lick_obj, original_index
         
-        return random.choice(selectable_licks)
+        original_index, lick_obj = random.choice(selectable_licks_with_indices)
+        return lick_obj, original_index
