@@ -99,10 +99,12 @@ if __name__ == "__main__":
     # This is the "Simple Blues Turnaround" from your licks file
     test_lick = [
         {"tab": "-2", "duration": 1},
-        {"tab": "-3_p", "duration": 1}, # Remember bends are file-safe: -3' is -3_p
+        {"tab": "-3_p", "duration": 0.5},
+        {"tab": "rest", "duration": 0.5},
         {"tab": "4", "duration": 0.5},
         {"tab": "-3_p", "duration": 0.5},
-        {"tab": "-2", "duration": 2}
+        {"tab": "rest", "duration": 0.5},
+        {"tab": "-2", "duration": 1.5}
     ]
 
     # 4. Play the lick at a desired speed
