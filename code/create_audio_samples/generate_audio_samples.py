@@ -67,7 +67,7 @@ def get_tab_name(hole, action, bend_level=0):
             return f"-{hole}"
         else:
             # e.g., -2', -3'', etc. -> -2_p, -3_pp
-            return f"-{hole}{'_p' * bend_level}"
+            return f"-{hole}_{'p' * bend_level}"
 
 # --- 4. AUDIO GENERATION ---
 

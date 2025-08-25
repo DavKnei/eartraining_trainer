@@ -24,7 +24,7 @@
       "note": "C#4",
       "frequency": 277.18
     },
-    "-2_p_p": {
+    "-2_pp": {
       "note": "C4",
       "frequency": 261.63
     },
@@ -40,11 +40,11 @@
       "note": "F4",
       "frequency": 349.23
     },
-    "-3_p_p": {
+    "-3_pp": {
       "note": "E4",
       "frequency": 329.63
     },
-    "-3_p_p_p": {
+    "-3_ppp": {
       "note": "D#4",
       "frequency": 311.13
     },
@@ -138,7 +138,7 @@
       "note": "D#4",
       "frequency": 311.13
     },
-    "-2_p_p": {
+    "-2_pp": {
       "note": "D4",
       "frequency": 293.66
     },
@@ -154,11 +154,11 @@
       "note": "G4",
       "frequency": 392.0
     },
-    "-3_p_p": {
+    "-3_pp": {
       "note": "F#4",
       "frequency": 369.99
     },
-    "-3_p_p_p": {
+    "-3_ppp": {
       "note": "F4",
       "frequency": 349.23
     },
@@ -252,7 +252,7 @@
       "note": "F#4",
       "frequency": 369.99
     },
-    "-2_p_p": {
+    "-2_pp": {
       "note": "F4",
       "frequency": 349.23
     },
@@ -268,11 +268,11 @@
       "note": "A#4",
       "frequency": 466.16
     },
-    "-3_p_p": {
+    "-3_pp": {
       "note": "A4",
       "frequency": 440.0
     },
-    "-3_p_p_p": {
+    "-3_ppp": {
       "note": "G#4",
       "frequency": 415.3
     },
@@ -366,7 +366,7 @@
       "note": "G#4",
       "frequency": 415.3
     },
-    "-2_p_p": {
+    "-2_pp": {
       "note": "G4",
       "frequency": 392.0
     },
@@ -382,11 +382,11 @@
       "note": "C5",
       "frequency": 523.25
     },
-    "-3_p_p": {
+    "-3_pp": {
       "note": "B4",
       "frequency": 493.88
     },
-    "-3_p_p_p": {
+    "-3_ppp": {
       "note": "A#4",
       "frequency": 466.16
     },
