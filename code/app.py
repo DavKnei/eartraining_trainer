@@ -2,7 +2,6 @@ import customtkinter
 from PIL import Image
 from audio_player import AudioPlayer
 from lick_manager import LickManager
-# MODIFIED: Removed format_tabs_for_display as it's no longer used here
 from display_tabs import NotationGenerator
 
 class EarTrainerApp(customtkinter.CTk):
@@ -21,6 +20,8 @@ class EarTrainerApp(customtkinter.CTk):
         The currently selected harmonica key (e.g., "G").
     tabs_visible : bool
         The state tracking whether the lick's tabs are currently visible.
+    score_image_object : customtkinter.CTkImage or None
+        A persistent reference to the score image object to prevent garbage collection.
     player : AudioPlayer
         An instance of the AudioPlayer for handling sound playback.
     lick_manager : LickManager
@@ -39,13 +40,14 @@ class EarTrainerApp(customtkinter.CTk):
 
         # ---- App Setup ----
         self.title("Harmonica Ear Trainer")
-        self.geometry("550x500")
+        self.geometry("550x450")
         self.grid_columnconfigure(0, weight=1)
 
         # ---- App State ----
         self.current_lick = None
         self.current_key = "G"
         self.tabs_visible = False
+        self.score_image_object = None  # Attribute to hold the image reference
 
         # ---- Backend Components ----
         self.player = AudioPlayer()
@@ -86,11 +88,9 @@ class EarTrainerApp(customtkinter.CTk):
         self.lick_info_label = customtkinter.CTkLabel(display_frame, text="Register: ... | Time: ...", font=("Arial", 14))
         self.lick_info_label.grid(row=0, column=0, padx=10, pady=(10, 5))
 
-        # MODIFIED: This single label now handles both the image and the "???" placeholder
+        # This single label now handles both the image and the "???" placeholder
         self.score_image_label = customtkinter.CTkLabel(display_frame, text="???", font=("Arial", 28, "bold"))
         self.score_image_label.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
-
-        # REMOVED: The separate self.formatted_tabs_label is no longer needed.
 
         # -- Controls Frame --
         controls_frame = customtkinter.CTkFrame(self)
@@ -185,9 +185,10 @@ class EarTrainerApp(customtkinter.CTk):
             # Display the score image
             if image_path:
                 try:
-                    ctk_image = customtkinter.CTkImage(light_image=Image.open(image_path), size=(500, 120))
-                    # MODIFIED: Configure the label to show the image and have no text
-                    self.score_image_label.configure(image=ctk_image, text="")
+                    # Store the image object in the instance attribute to prevent garbage collection
+                    self.score_image_object = customtkinter.CTkImage(light_image=Image.open(image_path), size=(500, 120))
+                    # Configure the label to show the image and have no text
+                    self.score_image_label.configure(image=self.score_image_object, text="")
                 except Exception as e:
                     print(f"Error loading image: {e}")
                     self.score_image_label.configure(image=None, text="Error generating score.")
@@ -196,7 +197,7 @@ class EarTrainerApp(customtkinter.CTk):
             
             self.toggle_tabs_button.configure(text="Hide Tabs")
         else:
-            # MODIFIED: Clear the image and set the placeholder text on the same label
+            # Clear the image and set the placeholder text on the same label
             self.score_image_label.configure(image=None, text="???", font=("Arial", 28, "bold"))
             self.toggle_tabs_button.configure(text="Show Tabs")
 
