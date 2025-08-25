@@ -15,6 +15,8 @@ This tool aims to help harmonica players improve their ear by providing exercise
 * **Position Focused:** Licks and scales are designed around common harmonica positions (e.g., 2nd position blues scale).
 
 ---
+## Notes
+The Project is still under development and does not have an overblows are overdraws or blowbends in it.
 
 ## Future Goals 🚀
 
