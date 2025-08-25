@@ -4,6 +4,7 @@ from PIL import Image
 from audio_player import AudioPlayer
 from lick_manager import LickManager
 from display_tabs import NotationGenerator
+from helper_func_app import get_lick_registers
 
 class EarTrainerApp(customtkinter.CTk):
     """
@@ -23,10 +24,6 @@ class EarTrainerApp(customtkinter.CTk):
         The selected register for filtering licks and displaying the reference scale.
     tabs_visible : bool
         The state tracking whether the practice lick's tabs are currently visible.
-    scale_image_object : customtkinter.CTkImage or None
-        A persistent reference to the top reference scale image object.
-    lick_image_object : customtkinter.CTkImage or None
-        A persistent reference to the bottom practice lick image object.
     player : AudioPlayer
         An instance of the AudioPlayer for handling sound playback.
     lick_manager : LickManager
@@ -37,24 +34,19 @@ class EarTrainerApp(customtkinter.CTk):
     def __init__(self):
         """
         Initializes the EarTrainerApp instance.
-
-        Sets up the main window, initializes state variables, instantiates
-        backend components, and builds the user interface.
         """
         super().__init__()
 
         # ---- App Setup ----
         self.title("Harmonica Ear Trainer")
         self.geometry("650x650")
-        self.grid_columnconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
         # ---- App State ----
         self.current_lick = None
         self.current_key = "G"
         self.current_register = "low"
         self.tabs_visible = False
-        self.scale_image_object = None
-        self.lick_image_object = None
 
         # ---- Backend Components ----
         self.player = AudioPlayer()
@@ -71,14 +63,11 @@ class EarTrainerApp(customtkinter.CTk):
     def _create_widgets(self):
         """
         Creates and arranges all the UI widgets within the main window.
-
-        This method is responsible for building the entire graphical user
-        interface, including frames, labels, dropdowns, buttons, and sliders.
         """
         # --- Top Control Frame ---
         top_frame = customtkinter.CTkFrame(self)
         top_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
-        top_frame.grid_columnconfigure((1, 3, 5), weight=1)
+        top_frame.columnconfigure((1, 3, 5), weight=1)
         
         customtkinter.CTkLabel(top_frame, text="Harp Key:").grid(row=0, column=0, padx=(10,5), pady=10)
         self.key_menu = customtkinter.CTkOptionMenu(top_frame, values=["G", "A", "C", "D"], command=self.on_control_change)
@@ -101,7 +90,7 @@ class EarTrainerApp(customtkinter.CTk):
         # --- Top Display for Scale Reference ---
         scale_display_frame = customtkinter.CTkFrame(self)
         scale_display_frame.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
-        scale_display_frame.grid_columnconfigure(0, weight=1)
+        scale_display_frame.columnconfigure(0, weight=1)
         
         customtkinter.CTkLabel(scale_display_frame, text="Reference Scale(s)", font=("Arial", 14)).grid(row=0, column=0, pady=(5,0))
         self.scale_notation_label = customtkinter.CTkLabel(scale_display_frame, text="")
@@ -110,8 +99,8 @@ class EarTrainerApp(customtkinter.CTk):
         # --- Lick Practice Frame ---
         lick_frame = customtkinter.CTkFrame(self)
         lick_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        lick_frame.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(2, weight=1)
+        lick_frame.columnconfigure(0, weight=1)
+        self.rowconfigure(2, weight=1)
 
         self.lick_info_label = customtkinter.CTkLabel(lick_frame, text="Practice Lick", font=("Arial", 14))
         self.lick_info_label.grid(row=0, column=0, padx=10, pady=(10, 5))
@@ -122,7 +111,7 @@ class EarTrainerApp(customtkinter.CTk):
         # -- Controls for the Lick --
         controls_frame = customtkinter.CTkFrame(self)
         controls_frame.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
-        controls_frame.grid_columnconfigure((0, 1, 2), weight=1)
+        controls_frame.columnconfigure((0, 1, 2), weight=1)
         self.new_lick_button = customtkinter.CTkButton(controls_frame, text="New Lick", command=self.load_new_lick)
         self.new_lick_button.grid(row=0, column=0, padx=5, pady=10, sticky="ew")
         self.play_button = customtkinter.CTkButton(controls_frame, text="Play Lick", command=self.play_current_lick)
@@ -133,7 +122,7 @@ class EarTrainerApp(customtkinter.CTk):
         # -- BPM Control --
         bpm_frame = customtkinter.CTkFrame(self)
         bpm_frame.grid(row=4, column=0, padx=10, pady=(0,10), sticky="ew")
-        bpm_frame.grid_columnconfigure(1, weight=1)
+        bpm_frame.columnconfigure(1, weight=1)
         self.bpm_label = customtkinter.CTkLabel(bpm_frame, text="BPM: 120")
         self.bpm_label.grid(row=0, column=0, padx=10, pady=10)
         self.bpm_slider = customtkinter.CTkSlider(bpm_frame, from_=60, to=240, number_of_steps=180, command=self.update_bpm_label)
@@ -143,10 +132,6 @@ class EarTrainerApp(customtkinter.CTk):
     def on_control_change(self, value: str):
         """
         Handles events from the top control dropdowns (Key, Scale, Register).
-
-        This unified callback updates the app's state based on the dropdown
-        selections and triggers reloads of audio samples or lick files
-        as needed.
 
         Parameters
         ----------
@@ -167,66 +152,26 @@ class EarTrainerApp(customtkinter.CTk):
         if scale_changed:
             self.lick_manager.load_licks_for_scale(self.scale_menu.get())
 
-        # If the scale or register filter changes, load a new lick
         if scale_changed or register_changed:
             self.load_new_lick()
-        else:
-            # If only the key changed, just update the existing display
+        else: # Only key changed, so just redraw existing content
             self._update_scale_display()
             self._update_lick_display()
 
-    def _get_lick_registers(self, lick_data):
-        """
-        Analyzes a lick's tabs to determine which registers are used.
-
-        Parameters
-        ----------
-        lick_data : list
-            The lick_data list of note dictionaries.
-
-        Returns
-        -------
-        list
-            A sorted list of unique register names used (e.g., ["low", "middle"]).
-        """
-        registers = set()
-        low_holes = {1, 2, 3}
-        middle_holes = {4, 5, 6}
-        
-        for note in lick_data:
-            tab = note.get('tab', '')
-            if tab == 'rest':
-                continue
-            
-            # Find the number in the tab string (e.g., '-3_p' -> '3')
-            match = re.search(r'\d+', tab)
-            if match:
-                hole = int(match.group(0))
-                if hole in low_holes:
-                    registers.add("low")
-                elif hole in middle_holes:
-                    registers.add("middle")
-                else: # Holes 7-10
-                    registers.add("high")
-
-        return sorted(list(registers))
-
     def _update_scale_display(self):
         """
-        Renders the reference scale(s) in the top display.
-
-        The content of this display is determined by the register of the
-        currently loaded practice lick (`self.current_lick`).
+        Renders the reference scale(s) in the top display based on the current lick.
         """
         if not self.current_lick:
             self.scale_notation_label.configure(image=None, text="Load a lick first")
+            self.scale_notation_label.image = None
             return
 
         lick_reg = self.current_lick.get("register")
         scale_to_display = None
 
         if lick_reg == "mixed":
-            used_registers = self._get_lick_registers(self.current_lick['lick_data'])
+            used_registers = get_lick_registers(self.current_lick['lick_data'], self.lick_manager.licks)
             scale_to_display = self.lick_manager.get_combined_scale_for_registers(used_registers)
         elif lick_reg in ["low", "middle", "high"]:
             scale_to_display = self.lick_manager.get_scale_by_register(lick_reg)
@@ -238,15 +183,17 @@ class EarTrainerApp(customtkinter.CTk):
                 self.current_key
             )
             if image_path:
-                self.scale_image_object = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
-                self.scale_notation_label.configure(image=self.scale_image_object, text="")
+                scale_image_obj = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
+                self.scale_notation_label.configure(image=scale_image_obj, text="")
+                self.scale_notation_label.image = scale_image_obj 
             else:
                  self.scale_notation_label.configure(image=None, text="Error rendering scale")
+                 self.scale_notation_label.image = None
         else:
-            # This case can happen if a lick has a register (e.g. 'all')
-            # that doesn't correspond to a specific reference scale part.
             self.scale_notation_label.configure(image=None, text="No specific reference scale for this lick")
-
+            self.scale_notation_label.image = None
+        
+        self.update_idletasks()
 
     def load_new_lick(self):
         """
@@ -254,9 +201,8 @@ class EarTrainerApp(customtkinter.CTk):
         """
         self.current_lick = self.lick_manager.get_random_lick(register=self.current_register)
         self.tabs_visible = False
-        # Update both display areas based on the new lick
-        self._update_scale_display() 
-        self._update_lick_display() 
+        self._update_scale_display()
+        self._update_lick_display()
 
     def _update_lick_display(self):
         """
@@ -265,7 +211,7 @@ class EarTrainerApp(customtkinter.CTk):
         if self.current_lick:
             register_info = self.current_lick.get('register', 'N/A')
             if register_info == 'mixed':
-                display_register = self._get_lick_registers(self.current_lick['lick_data'])
+                display_register = get_lick_registers(self.current_lick['lick_data'], self.lick_manager.licks)
                 display_register_str = ", ".join(display_register)
             else:
                 display_register_str = register_info
@@ -279,17 +225,23 @@ class EarTrainerApp(customtkinter.CTk):
                     self.current_key
                 )
                 if image_path:
-                    self.lick_image_object = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
-                    self.lick_notation_label.configure(image=self.lick_image_object, text="")
+                    lick_image_obj = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
+                    self.lick_notation_label.configure(image=lick_image_obj, text="")
+                    self.lick_notation_label.image = lick_image_obj
                 else:
                     self.lick_notation_label.configure(image=None, text="Error")
+                    self.lick_notation_label.image = None
                 self.toggle_tabs_button.configure(text="Hide Tabs")
             else:
                 self.lick_notation_label.configure(image=None, text="???", font=("Arial", 28, "bold"))
+                self.lick_notation_label.image = None
                 self.toggle_tabs_button.configure(text="Show Tabs")
         else:
             self.lick_info_label.configure(text="Practice Lick")
             self.lick_notation_label.configure(image=None, text=f"No '{self.current_register}' licks in file.", font=("Arial", 20))
+            self.lick_notation_label.image = None
+        
+        self.update_idletasks()
 
     def play_current_lick(self):
         """
