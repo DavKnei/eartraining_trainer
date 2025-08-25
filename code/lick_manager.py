@@ -72,6 +72,7 @@ class LickManager:
         if len(self.licks) <= 3:
             return None 
 
+        # Create a list of tuples: (index, lick_object) for practice licks
         selectable_licks_with_indices = list(enumerate(self.licks))[3:]
         if not selectable_licks_with_indices:
             return None

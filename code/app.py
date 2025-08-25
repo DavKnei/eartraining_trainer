@@ -32,9 +32,6 @@ class EarTrainerApp(customtkinter.CTk):
     def __init__(self):
         """
         Initializes the EarTrainerApp instance.
-
-        Sets up the main window, initializes state variables, instantiates
-        backend components, and builds the user interface.
         """
         super().__init__()
 
@@ -67,11 +64,7 @@ class EarTrainerApp(customtkinter.CTk):
     def _create_widgets(self):
         """
         Creates and arranges all the UI widgets within the main window.
-
-        This method is responsible for building the entire graphical user
-        interface, including frames, labels, dropdowns, buttons, and sliders.
         """
-        # --- Top Control Frame ---
         top_frame = customtkinter.CTkFrame(self)
         top_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
         top_frame.columnconfigure((1, 3, 5), weight=1)
@@ -93,28 +86,23 @@ class EarTrainerApp(customtkinter.CTk):
         self.register_menu.grid(row=0, column=5, padx=(0,10), pady=10, sticky="ew")
         self.register_menu.set(self.current_register)
         
-        # --- Top Display for Scale Reference ---
-        scale_display_frame = customtkinter.CTkFrame(self)
-        scale_display_frame.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
-        scale_display_frame.columnconfigure(0, weight=1)
-        
-        customtkinter.CTkLabel(scale_display_frame, text="Reference Scale", font=("Arial", 14)).grid(row=0, column=0, pady=(5,0))
-        self.scale_notation_label = customtkinter.CTkLabel(scale_display_frame, text="")
-        self.scale_notation_label.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
+        # This frame will contain the reference scale label
+        self.scale_display_frame = customtkinter.CTkFrame(self)
+        self.scale_display_frame.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
+        self.scale_display_frame.columnconfigure(0, weight=1)
+        customtkinter.CTkLabel(self.scale_display_frame, text="Reference Scale", font=("Arial", 14)).grid(row=0, column=0, pady=(5,0))
+        # The label itself is now created/destroyed in the update method
 
-        # --- Lick Practice Frame ---
-        lick_frame = customtkinter.CTkFrame(self)
-        lick_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        lick_frame.columnconfigure(0, weight=1)
+        # This frame will contain the practice lick label
+        self.lick_frame = customtkinter.CTkFrame(self)
+        self.lick_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        self.lick_frame.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
 
-        self.lick_info_label = customtkinter.CTkLabel(lick_frame, text="Practice Lick", font=("Arial", 14))
+        self.lick_info_label = customtkinter.CTkLabel(self.lick_frame, text="Practice Lick", font=("Arial", 14))
         self.lick_info_label.grid(row=0, column=0, padx=10, pady=(10, 5))
+        # The label itself is now created/destroyed in the update method
 
-        self.lick_notation_label = customtkinter.CTkLabel(lick_frame, text="???", font=("Arial", 28, "bold"))
-        self.lick_notation_label.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
-
-        # -- Controls for the Lick --
         controls_frame = customtkinter.CTkFrame(self)
         controls_frame.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
         controls_frame.columnconfigure((0, 1, 2), weight=1)
@@ -125,7 +113,6 @@ class EarTrainerApp(customtkinter.CTk):
         self.toggle_tabs_button = customtkinter.CTkButton(controls_frame, text="Show Tabs", command=self.toggle_tabs_visibility)
         self.toggle_tabs_button.grid(row=0, column=2, padx=5, pady=10, sticky="ew")
         
-        # -- BPM Control --
         bpm_frame = customtkinter.CTkFrame(self)
         bpm_frame.grid(row=4, column=0, padx=10, pady=(0,10), sticky="ew")
         bpm_frame.columnconfigure(1, weight=1)
@@ -138,11 +125,6 @@ class EarTrainerApp(customtkinter.CTk):
     def on_control_change(self, value: str):
         """
         Handles events from the top control dropdowns (Key, Scale, Register).
-
-        Parameters
-        ----------
-        value : str
-            The value of the widget that triggered the callback (unused).
         """
         key_changed = self.current_key != self.key_menu.get()
         scale_changed = self.current_scale != self.scale_menu.get()
@@ -160,40 +142,42 @@ class EarTrainerApp(customtkinter.CTk):
 
         if scale_changed or register_changed:
             self.load_new_lick()
-        else: # Only key changed, so just redraw existing content
+        else: 
             self._update_scale_display()
             self._update_lick_display()
 
     def _update_scale_display(self):
         """
-        Loads and displays the pre-rendered reference scale image.
-
-        The displayed image corresponds to the register selected in the dropdown.
+        Loads and displays the pre-rendered reference scale image by
+        destroying and recreating the label.
         """
+        # FIX: Destroy the old label if it exists to prevent overlap/memory issues
+        if hasattr(self, "scale_notation_label"):
+            self.scale_notation_label.destroy()
+
+        # Recreate the label in its parent frame
+        self.scale_notation_label = customtkinter.CTkLabel(self.scale_display_frame, text="")
+        self.scale_notation_label.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
+        
         register_to_display = self.current_register if self.current_register not in ["all", "mixed"] else "low"
-            
         filename = f"scale_{register_to_display}_register.png"
         image_path = os.path.join("licks", "images", f"{self.current_key.upper()}_harp", self.current_scale, filename)
         
         if os.path.exists(image_path):
             image_obj = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
-            self.scale_notation_label.configure(image=image_obj, text="")
-            self.scale_notation_label.image = image_obj # Prevent garbage collection
+            self.scale_notation_label.configure(image=image_obj)
+            self.scale_notation_label.image = image_obj
         else:
-            self.scale_notation_label.configure(image=None, text="Reference image not found.")
-            self.scale_notation_label.image = None
+            self.scale_notation_label.configure(text="Reference image not found.")
             
     def load_new_lick(self):
         """
         Fetches a new random lick and its index, then updates the UI.
         """
         lick_info = self.lick_manager.get_random_lick(register=self.current_register)
-        
-        # FIX: Check if lick_info is valid before unpacking it
         if lick_info:
             self.current_lick, self.current_lick_index = lick_info
         else:
-            # If no lick is found, set both to None
             self.current_lick, self.current_lick_index = None, None
             
         self.tabs_visible = False
@@ -202,33 +186,38 @@ class EarTrainerApp(customtkinter.CTk):
 
     def _update_lick_display(self):
         """
-        Updates the lower practice lick display by loading a pre-rendered image.
+        Updates the lower practice lick display by destroying and
+        recreating the label.
         """
+        # FIX: Destroy the old label if it exists to prevent overlap/memory issues
+        if hasattr(self, "lick_notation_label"):
+            self.lick_notation_label.destroy()
+
+        # Recreate the label in its parent frame
+        self.lick_notation_label = customtkinter.CTkLabel(self.lick_frame, text="")
+        self.lick_notation_label.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
+
         if self.current_lick:
             self.lick_info_label.configure(text=f"Practice Lick (Register: {self.current_lick.get('register', 'N/A')})")
             
             if self.tabs_visible:
-                # Construct the path to the pre-rendered lick image
                 lick_number = self.current_lick_index - 2
                 filename = f"lick_{lick_number:02d}.png"
                 image_path = os.path.join("licks", "images", f"{self.current_key.upper()}_harp", self.current_scale, filename)
 
                 if os.path.exists(image_path):
                     lick_image_obj = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
-                    self.lick_notation_label.configure(image=lick_image_obj, text="")
-                    self.lick_notation_label.image = lick_image_obj # Prevent garbage collection
+                    self.lick_notation_label.configure(image=lick_image_obj)
+                    self.lick_notation_label.image = lick_image_obj
                 else:
-                    self.lick_notation_label.configure(image=None, text="Lick image not found.")
-                    self.lick_notation_label.image = None
+                    self.lick_notation_label.configure(text="Lick image not found.")
                 self.toggle_tabs_button.configure(text="Hide Tabs")
             else:
-                self.lick_notation_label.configure(image=None, text="???", font=("Arial", 28, "bold"))
-                self.lick_notation_label.image = None
+                self.lick_notation_label.configure(text="???", font=("Arial", 28, "bold"))
                 self.toggle_tabs_button.configure(text="Show Tabs")
         else:
             self.lick_info_label.configure(text="Practice Lick")
-            self.lick_notation_label.configure(image=None, text=f"No '{self.current_register}' licks in file.", font=("Arial", 20))
-            self.lick_notation_label.image = None
+            self.lick_notation_label.configure(text=f"No '{self.current_register}' licks in file.", font=("Arial", 20))
 
     def play_current_lick(self):
         """
@@ -247,11 +236,6 @@ class EarTrainerApp(customtkinter.CTk):
     def update_bpm_label(self, value: float):
         """
         Updates the BPM label as the slider is moved.
-        
-        Parameters
-        ----------
-        value : float
-            The current numerical value from the BPM slider.
         """
         self.bpm_label.configure(text=f"BPM: {int(value)}")
 
