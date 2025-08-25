@@ -1,0 +1,102 @@
+{
+  "licks": [
+    {
+      "register": "middle",
+      "lick_data": [
+        {"tab": "-2", "duration": 1},
+        {"tab": "-3", "duration": 1},
+        {"tab": "4", "duration": 1},
+        {"tab": "-4", "duration": 0.5},
+        {"tab": "4", "duration": 0.5},
+        {"tab": "3", "duration": 1},
+        {"tab": "2", "duration": 1}
+      ]
+    },
+    {
+      "register": "low",
+      "lick_data": [
+        {"tab": "-1", "duration": 1},
+        {"tab": "2", "duration": 1},
+        {"tab": "-2", "duration": 1},
+        {"tab": "3", "duration": 1},
+        {"tab": "-2", "duration": 2}
+      ]
+    },
+    {
+      "register": "middle",
+      "lick_data": [
+        {"tab": "-4", "duration": 1},
+        {"tab": "-4'", "duration": 1.5},
+        {"tab": "-4", "duration": 0.5},
+        {"tab": "-5", "duration": 1},
+        {"tab": "6", "duration": 2}
+      ]
+    },
+    {
+      "register": "low",
+      "lick_data": [
+        {"tab": "-2", "duration": 1},
+        {"tab": "-2''", "duration": 1},
+        {"tab": "-1", "duration": 1},
+        {"tab": "-2''", "duration": 0.5},
+        {"tab": "-2", "duration": 1.5}
+      ]
+    },
+    {
+      "register": "middle",
+      "lick_data": [
+        {"tab": "-2", "duration": 1},
+        {"tab": "4", "duration": 1},
+        {"tab": "-3", "duration": 1.5},
+        {"tab": "-2", "duration": 0.5},
+        {"tab": "-2", "duration": 1},
+        {"tab": "-2", "duration": 1}
+      ]
+    },
+    {
+        "register": "middle",
+        "lick_data": [
+            {"tab": "-4", "duration": 0.25},
+            {"tab": "-5", "duration": 0.25},
+            {"tab": "-4", "duration": 0.25},
+            {"tab": "-5", "duration": 0.25},
+            {"tab": "-4", "duration": 0.25},
+            {"tab": "-5", "duration": 0.25},
+            {"tab": "-4", "duration": 0.25},
+            {"tab": "-5", "duration": 0.25}
+        ]
+      },
+    {
+      "register": "middle",
+      "lick_data": [
+        {"tab": "-4", "duration": 1},
+        {"tab": "-3", "duration": 1},
+        {"tab": "4", "duration": 2}
+      ]
+    },
+    {
+      "register": "high",
+      "lick_data": [
+        {"tab": "6", "duration": 1},
+        {"tab": "-5", "duration": 1},
+        {"tab": "-4", "duration": 2}
+      ]
+    },
+    {
+        "register": "middle",
+        "lick_data": [
+          {"tab": "-4", "duration": 1},
+          {"tab": "-5", "duration": 1},
+          {"tab": "-4", "duration": 2}
+        ]
+      },
+      {
+        "register": "low",
+        "lick_data": [
+          {"tab": "-3", "duration": 1},
+          {"tab": "-2", "duration": 1},
+          {"tab": "2", "duration": 2}
+        ]
+      }
+  ]
+}
