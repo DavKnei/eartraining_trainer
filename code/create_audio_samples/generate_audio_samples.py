@@ -23,7 +23,7 @@ NUM_HARMONICS = 8
 SEMITONES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 # Base frequency for all calculations (A4 = 440 Hz)
-A4_FREQ = 440.0
+A4_FREQ = 443.0  # used for ost harmonicas see https://ohw.se/hca/tuning-theory/
 # The position of A in our SEMITONES list
 A4_INDEX = 9
 # The octave of our reference note

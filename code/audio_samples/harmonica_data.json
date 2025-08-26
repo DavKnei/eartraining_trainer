@@ -2,457 +2,457 @@
   "G": {
     "1": {
       "note": "G3",
-      "frequency": 196.0
+      "frequency": 197.33
     },
     "-1": {
       "note": "A3",
-      "frequency": 220.0
+      "frequency": 221.5
     },
     "-1_p": {
       "note": "G#3",
-      "frequency": 207.65
+      "frequency": 209.07
     },
     "2": {
       "note": "B3",
-      "frequency": 246.94
+      "frequency": 248.63
     },
     "-2": {
       "note": "D4",
-      "frequency": 293.66
+      "frequency": 295.67
     },
     "-2_p": {
       "note": "C#4",
-      "frequency": 277.18
+      "frequency": 279.07
     },
     "-2_pp": {
       "note": "C4",
-      "frequency": 261.63
+      "frequency": 263.41
     },
     "3": {
       "note": "D4",
-      "frequency": 293.66
+      "frequency": 295.67
     },
     "-3": {
       "note": "F#4",
-      "frequency": 369.99
+      "frequency": 372.52
     },
     "-3_p": {
       "note": "F4",
-      "frequency": 349.23
+      "frequency": 351.61
     },
     "-3_pp": {
       "note": "E4",
-      "frequency": 329.63
+      "frequency": 331.88
     },
     "-3_ppp": {
       "note": "D#4",
-      "frequency": 311.13
+      "frequency": 313.25
     },
     "4": {
       "note": "G4",
-      "frequency": 392.0
+      "frequency": 394.67
     },
     "-4": {
       "note": "A4",
-      "frequency": 440.0
+      "frequency": 443.0
     },
     "-4_p": {
       "note": "G#4",
-      "frequency": 415.3
+      "frequency": 418.14
     },
     "5": {
       "note": "B4",
-      "frequency": 493.88
+      "frequency": 497.25
     },
     "-5": {
       "note": "C#5",
-      "frequency": 554.37
+      "frequency": 558.15
     },
     "6": {
       "note": "D5",
-      "frequency": 587.33
+      "frequency": 591.33
     },
     "-6": {
       "note": "E5",
-      "frequency": 659.26
+      "frequency": 663.75
     },
     "-6_p": {
       "note": "D#5",
-      "frequency": 622.25
+      "frequency": 626.5
     },
     "7": {
       "note": "G5",
-      "frequency": 783.99
+      "frequency": 789.34
     },
     "-7": {
       "note": "F#5",
-      "frequency": 739.99
+      "frequency": 745.03
     },
     "8": {
       "note": "B5",
-      "frequency": 987.77
+      "frequency": 994.5
     },
     "-8": {
       "note": "A5",
-      "frequency": 880.0
+      "frequency": 886.0
     },
     "9": {
       "note": "D6",
-      "frequency": 1174.66
+      "frequency": 1182.67
     },
     "-9": {
       "note": "C#6",
-      "frequency": 1108.73
+      "frequency": 1116.29
     },
     "10": {
       "note": "G6",
-      "frequency": 1567.98
+      "frequency": 1578.67
     },
     "-10": {
       "note": "F#6",
-      "frequency": 1479.98
+      "frequency": 1490.07
     }
   },
   "A": {
     "1": {
       "note": "A3",
-      "frequency": 220.0
+      "frequency": 221.5
     },
     "-1": {
       "note": "B3",
-      "frequency": 246.94
+      "frequency": 248.63
     },
     "-1_p": {
       "note": "A#3",
-      "frequency": 233.08
+      "frequency": 234.67
     },
     "2": {
       "note": "C#4",
-      "frequency": 277.18
+      "frequency": 279.07
     },
     "-2": {
       "note": "E4",
-      "frequency": 329.63
+      "frequency": 331.88
     },
     "-2_p": {
       "note": "D#4",
-      "frequency": 311.13
+      "frequency": 313.25
     },
     "-2_pp": {
       "note": "D4",
-      "frequency": 293.66
+      "frequency": 295.67
     },
     "3": {
       "note": "E4",
-      "frequency": 329.63
+      "frequency": 331.88
     },
     "-3": {
       "note": "G#4",
-      "frequency": 415.3
+      "frequency": 418.14
     },
     "-3_p": {
       "note": "G4",
-      "frequency": 392.0
+      "frequency": 394.67
     },
     "-3_pp": {
       "note": "F#4",
-      "frequency": 369.99
+      "frequency": 372.52
     },
     "-3_ppp": {
       "note": "F4",
-      "frequency": 349.23
+      "frequency": 351.61
     },
     "4": {
       "note": "A4",
-      "frequency": 440.0
+      "frequency": 443.0
     },
     "-4": {
       "note": "B4",
-      "frequency": 493.88
+      "frequency": 497.25
     },
     "-4_p": {
       "note": "A#4",
-      "frequency": 466.16
+      "frequency": 469.34
     },
     "5": {
       "note": "C#5",
-      "frequency": 554.37
+      "frequency": 558.15
     },
     "-5": {
       "note": "D#5",
-      "frequency": 622.25
+      "frequency": 626.5
     },
     "6": {
       "note": "E5",
-      "frequency": 659.26
+      "frequency": 663.75
     },
     "-6": {
       "note": "F#5",
-      "frequency": 739.99
+      "frequency": 745.03
     },
     "-6_p": {
       "note": "F5",
-      "frequency": 698.46
+      "frequency": 703.22
     },
     "7": {
       "note": "A5",
-      "frequency": 880.0
+      "frequency": 886.0
     },
     "-7": {
       "note": "G#5",
-      "frequency": 830.61
+      "frequency": 836.27
     },
     "8": {
       "note": "C#6",
-      "frequency": 1108.73
+      "frequency": 1116.29
     },
     "-8": {
       "note": "B5",
-      "frequency": 987.77
+      "frequency": 994.5
     },
     "9": {
       "note": "E6",
-      "frequency": 1318.51
+      "frequency": 1327.5
     },
     "-9": {
       "note": "D#6",
-      "frequency": 1244.51
+      "frequency": 1252.99
     },
     "10": {
       "note": "A6",
-      "frequency": 1760.0
+      "frequency": 1772.0
     },
     "-10": {
       "note": "G#6",
-      "frequency": 1661.22
+      "frequency": 1672.55
     }
   },
   "C": {
     "1": {
       "note": "C4",
-      "frequency": 261.63
+      "frequency": 263.41
     },
     "-1": {
       "note": "D4",
-      "frequency": 293.66
+      "frequency": 295.67
     },
     "-1_p": {
       "note": "C#4",
-      "frequency": 277.18
+      "frequency": 279.07
     },
     "2": {
       "note": "E4",
-      "frequency": 329.63
+      "frequency": 331.88
     },
     "-2": {
       "note": "G4",
-      "frequency": 392.0
+      "frequency": 394.67
     },
     "-2_p": {
       "note": "F#4",
-      "frequency": 369.99
+      "frequency": 372.52
     },
     "-2_pp": {
       "note": "F4",
-      "frequency": 349.23
+      "frequency": 351.61
     },
     "3": {
       "note": "G4",
-      "frequency": 392.0
+      "frequency": 394.67
     },
     "-3": {
       "note": "B4",
-      "frequency": 493.88
+      "frequency": 497.25
     },
     "-3_p": {
       "note": "A#4",
-      "frequency": 466.16
+      "frequency": 469.34
     },
     "-3_pp": {
       "note": "A4",
-      "frequency": 440.0
+      "frequency": 443.0
     },
     "-3_ppp": {
       "note": "G#4",
-      "frequency": 415.3
+      "frequency": 418.14
     },
     "4": {
       "note": "C5",
-      "frequency": 523.25
+      "frequency": 526.82
     },
     "-4": {
       "note": "D5",
-      "frequency": 587.33
+      "frequency": 591.33
     },
     "-4_p": {
       "note": "C#5",
-      "frequency": 554.37
+      "frequency": 558.15
     },
     "5": {
       "note": "E5",
-      "frequency": 659.26
+      "frequency": 663.75
     },
     "-5": {
       "note": "F#5",
-      "frequency": 739.99
+      "frequency": 745.03
     },
     "6": {
       "note": "G5",
-      "frequency": 783.99
+      "frequency": 789.34
     },
     "-6": {
       "note": "A5",
-      "frequency": 880.0
+      "frequency": 886.0
     },
     "-6_p": {
       "note": "G#5",
-      "frequency": 830.61
+      "frequency": 836.27
     },
     "7": {
       "note": "C6",
-      "frequency": 1046.5
+      "frequency": 1053.64
     },
     "-7": {
       "note": "B5",
-      "frequency": 987.77
+      "frequency": 994.5
     },
     "8": {
       "note": "E6",
-      "frequency": 1318.51
+      "frequency": 1327.5
     },
     "-8": {
       "note": "D6",
-      "frequency": 1174.66
+      "frequency": 1182.67
     },
     "9": {
       "note": "G6",
-      "frequency": 1567.98
+      "frequency": 1578.67
     },
     "-9": {
       "note": "F#6",
-      "frequency": 1479.98
+      "frequency": 1490.07
     },
     "10": {
       "note": "C7",
-      "frequency": 2093.0
+      "frequency": 2107.28
     },
     "-10": {
       "note": "B6",
-      "frequency": 1975.53
+      "frequency": 1989.0
     }
   },
   "D": {
     "1": {
       "note": "D4",
-      "frequency": 293.66
+      "frequency": 295.67
     },
     "-1": {
       "note": "E4",
-      "frequency": 329.63
+      "frequency": 331.88
     },
     "-1_p": {
       "note": "D#4",
-      "frequency": 311.13
+      "frequency": 313.25
     },
     "2": {
       "note": "F#4",
-      "frequency": 369.99
+      "frequency": 372.52
     },
     "-2": {
       "note": "A4",
-      "frequency": 440.0
+      "frequency": 443.0
     },
     "-2_p": {
       "note": "G#4",
-      "frequency": 415.3
+      "frequency": 418.14
     },
     "-2_pp": {
       "note": "G4",
-      "frequency": 392.0
+      "frequency": 394.67
     },
     "3": {
       "note": "A4",
-      "frequency": 440.0
+      "frequency": 443.0
     },
     "-3": {
       "note": "C#5",
-      "frequency": 554.37
+      "frequency": 558.15
     },
     "-3_p": {
       "note": "C5",
-      "frequency": 523.25
+      "frequency": 526.82
     },
     "-3_pp": {
       "note": "B4",
-      "frequency": 493.88
+      "frequency": 497.25
     },
     "-3_ppp": {
       "note": "A#4",
-      "frequency": 466.16
+      "frequency": 469.34
     },
     "4": {
       "note": "D5",
-      "frequency": 587.33
+      "frequency": 591.33
     },
     "-4": {
       "note": "E5",
-      "frequency": 659.26
+      "frequency": 663.75
     },
     "-4_p": {
       "note": "D#5",
-      "frequency": 622.25
+      "frequency": 626.5
     },
     "5": {
       "note": "F#5",
-      "frequency": 739.99
+      "frequency": 745.03
     },
     "-5": {
       "note": "G#5",
-      "frequency": 830.61
+      "frequency": 836.27
     },
     "6": {
       "note": "A5",
-      "frequency": 880.0
+      "frequency": 886.0
     },
     "-6": {
       "note": "B5",
-      "frequency": 987.77
+      "frequency": 994.5
     },
     "-6_p": {
       "note": "A#5",
-      "frequency": 932.33
+      "frequency": 938.68
     },
     "7": {
       "note": "D6",
-      "frequency": 1174.66
+      "frequency": 1182.67
     },
     "-7": {
       "note": "C#6",
-      "frequency": 1108.73
+      "frequency": 1116.29
     },
     "8": {
       "note": "F#6",
-      "frequency": 1479.98
+      "frequency": 1490.07
     },
     "-8": {
       "note": "E6",
-      "frequency": 1318.51
+      "frequency": 1327.5
     },
     "9": {
       "note": "A6",
-      "frequency": 1760.0
+      "frequency": 1772.0
     },
     "-9": {
       "note": "G#6",
-      "frequency": 1661.22
+      "frequency": 1672.55
     },
     "10": {
       "note": "D7",
-      "frequency": 2349.32
+      "frequency": 2365.34
     },
     "-10": {
       "note": "C#7",
-      "frequency": 2217.46
+      "frequency": 2232.58
     }
   }
 }
