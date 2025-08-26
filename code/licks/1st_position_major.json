@@ -1,6 +1,42 @@
 {
   "licks": [
     {
+      "register": "all",
+      "time_signature": "4/4",
+      "lick_data": [
+        {"tab": "1", "duration": 0.5}, {"tab": "-1", "duration": 0.5}, {"tab": "2", "duration": 0.5}, {"tab": "-2_pp", "duration": 0.5}, {"tab": "-2", "duration": 0.5}, {"tab": "-3_pp", "duration": 0.5}, {"tab": "-3", "duration": 0.5}, {"tab": "4", "duration": 0.5},
+        {"tab": "4", "duration": 0.5}, {"tab": "-4", "duration": 0.5}, {"tab": "5", "duration": 0.5}, {"tab": "-5", "duration": 0.5}, {"tab": "6", "duration": 0.5}, {"tab": "-6", "duration": 0.5}, {"tab": "-7", "duration": 0.5}, {"tab": "7", "duration": 0.5},
+        {"tab": "7", "duration": 0.5}, {"tab": "-8", "duration": 0.5}, {"tab": "8", "duration": 0.5}, {"tab": "-9", "duration": 0.5}, {"tab": "9", "duration": 0.5}, {"tab": "-10", "duration": 0.5}, {"tab": "10", "duration": 1}
+      ]
+    },
+    {
+      "register": "mixed_low_middle",
+      "time_signature": "4/4",
+      "lick_data": [
+        {"tab": "1", "duration": 1}, {"tab": "-1", "duration": 1}, {"tab": "2", "duration": 1}, {"tab": "-2_pp", "duration": 1}, {"tab": "-2", "duration": 1}, {"tab": "-3_ppp", "duration": 1}, {"tab": "-3", "duration": 1}, {"tab": "4", "duration": 1},
+        {"tab": "rest", "duration": 2},
+        {"tab": "4", "duration": 1}, {"tab": "-4", "duration": 1}, {"tab": "5", "duration": 1}, {"tab": "-5", "duration": 1}, {"tab": "6", "duration": 1}, {"tab": "-6", "duration": 1}, {"tab": "-7", "duration": 1}, {"tab": "7", "duration": 1}
+      ]
+    },
+    {
+      "register": "mixed_middle_high",
+      "time_signature": "4/4",
+      "lick_data": [
+        {"tab": "4", "duration": 1}, {"tab": "-4", "duration": 1}, {"tab": "5", "duration": 1}, {"tab": "-5", "duration": 1}, {"tab": "6", "duration": 1}, {"tab": "-6", "duration": 1}, {"tab": "-7", "duration": 1}, {"tab": "7", "duration": 1},
+        {"tab": "rest", "duration": 2},
+        {"tab": "7", "duration": 1}, {"tab": "-8", "duration": 1}, {"tab": "8", "duration": 1}, {"tab": "-9", "duration": 1}, {"tab": "9", "duration": 1}, {"tab": "-10", "duration": 1}, {"tab": "10", "duration": 1}
+      ]
+    },
+    {
+      "register": "mixed_low_high",
+      "time_signature": "4/4",
+      "lick_data": [
+        {"tab": "1", "duration": 1}, {"tab": "-1", "duration": 1}, {"tab": "2", "duration": 1}, {"tab": "-2_pp", "duration": 1}, {"tab": "-2", "duration": 1}, {"tab": "-3_ppp", "duration": 1}, {"tab": "-3", "duration": 1}, {"tab": "4", "duration": 1},
+        {"tab": "rest", "duration": 2},
+        {"tab": "7", "duration": 1}, {"tab": "-8", "duration": 1}, {"tab": "8", "duration": 1}, {"tab": "-9", "duration": 1}, {"tab": "9", "duration": 1}, {"tab": "-10", "duration": 1}, {"tab": "10", "duration": 1}
+      ]
+    },
+    {
       "register": "low",
       "time_signature": "4/4",
       "lick_data": [
@@ -21,6 +57,7 @@
         {"tab": "7", "duration": 0.5}, {"tab": "-8", "duration": 0.5}, {"tab": "8", "duration": 0.5}, {"tab": "-9", "duration": 0.5}, {"tab": "9", "duration": 0.5}, {"tab": "-10", "duration": 0.5}, {"tab": "10", "duration": 1}
       ]
     },
+
     {
       "register": "low",
       "time_signature": "4/4",

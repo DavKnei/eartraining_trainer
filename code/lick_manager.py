@@ -13,7 +13,7 @@ class LickManager:
         self.licks = []
         self.loaded_scale = None
         self.available_scales = self._discover_scales()
-        
+
         if self.available_scales:
             print(f"LickManager initialized. Found scales: {', '.join(self.available_scales)}")
             self.load_licks_for_scale(self.available_scales[0])
@@ -23,7 +23,8 @@ class LickManager:
     def _discover_scales(self):
         """Scans the licks directory and finds all available scale files."""
         try:
-            files = [f for f in os.listdir(self.directory) if f.endswith('.json')]
+            # Filter out directories, only look for .json files
+            files = [f for f in os.listdir(self.directory) if f.endswith('.json') and os.path.isfile(os.path.join(self.directory, f))]
             return sorted([os.path.splitext(f)[0] for f in files])
         except FileNotFoundError:
             return []
@@ -59,6 +60,40 @@ class LickManager:
             return self.licks[index]
         return None
 
+    def get_combined_scale_for_registers(self, registers):
+        """
+        Combines multiple scale parts into a single lick object for display.
+        
+        Parameters
+        ----------
+        registers : list
+            A list of register names to combine (e.g., ['low', 'middle']).
+
+        Returns
+        -------
+        dict or None
+            A lick object containing the combined lick_data.
+        """
+        combined_data = []
+        # Ensure a consistent and logical order for the combined scale
+        ordered_registers = [reg for reg in ["low", "middle", "high"] if reg in registers]
+
+        for i, reg in enumerate(ordered_registers):
+            scale_part = self.get_scale_by_register(reg)
+            if scale_part:
+                combined_data.extend(scale_part['lick_data'])
+                if i < len(ordered_registers) - 1:
+                    combined_data.append({"tab": "rest", "duration": 2}) # Half note rest
+        
+        if not combined_data:
+            return None
+            
+        return {
+            "register": ", ".join(ordered_registers),
+            "time_signature": "4/4",
+            "lick_data": combined_data
+        }
+
     def get_random_lick(self, register="all"):
         """
         Returns a random practice lick and its original index, optionally
@@ -72,7 +107,6 @@ class LickManager:
         if len(self.licks) <= 3:
             return None 
 
-        # Create a list of tuples: (index, lick_object) for practice licks
         selectable_licks_with_indices = list(enumerate(self.licks))[3:]
         if not selectable_licks_with_indices:
             return None
