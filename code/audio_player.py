@@ -20,17 +20,21 @@ class AudioPlayer:
         print("AudioPlayer initialized.")
 
     def _load_metronome_sounds(self):
-        """Loads both metronome click sounds."""
+        """Loads both metronome click sounds and ensures a standard sample rate."""
         metronome_path_1 = os.path.join(self.samples_base_path, "metronome_click1.wav")
         metronome_path_2 = os.path.join(self.samples_base_path, "metronome_click.wav")
 
         if os.path.exists(metronome_path_1):
-            self.metronome_click_1 = AudioSegment.from_wav(metronome_path_1)
+            sound = AudioSegment.from_wav(metronome_path_1)
+            # --- FIX: Set a standard sample rate ---
+            self.metronome_click_1 = sound.set_frame_rate(44100)
         else:
             print(f"Warning: Metronome click 1 sound not found at {metronome_path_1}")
 
         if os.path.exists(metronome_path_2):
-            self.metronome_click_2 = AudioSegment.from_wav(metronome_path_2)
+            sound = AudioSegment.from_wav(metronome_path_2)
+            # --- FIX: Set a standard sample rate ---
+            self.metronome_click_2 = sound.set_frame_rate(44100)
         else:
             print(f"Warning: Metronome click 2 sound not found at {metronome_path_2}")
 
@@ -46,7 +50,8 @@ class AudioPlayer:
 
     def load_harp_samples(self, key='G'):
         """
-        Loads all .wav samples for a specific harmonica key into memory.
+        Loads all .wav samples for a specific harmonica key into memory,
+        ensuring they all use a standard sample rate.
         """
         self.harmonica_samples.clear() # Clear any previously loaded harp
         harp_folder = f"{key.upper()}_harp"
@@ -61,7 +66,14 @@ class AudioPlayer:
             if filename.endswith(".wav"):
                 tab_name = filename.replace('.wav', '')
                 sample_path = os.path.join(key_path, filename)
-                self.harmonica_samples[tab_name] = AudioSegment.from_wav(sample_path)
+                
+                # Load the sample
+                sample = AudioSegment.from_wav(sample_path)
+                
+                # --- FIX: Set a standard sample rate for all harmonica notes ---
+                resampled_sample = sample.set_frame_rate(44100)
+                
+                self.harmonica_samples[tab_name] = resampled_sample
         
         print(f"Loaded {len(self.harmonica_samples)} samples.")
         return True
@@ -95,6 +107,7 @@ class AudioPlayer:
                     final_sequence += AudioSegment.silent(duration=note_duration_ms)
                     continue
                 
+                # We use the beginning of the sample up to the required duration
                 played_note = sample[:note_duration_ms]
                 final_sequence += played_note
 
@@ -137,6 +150,7 @@ class AudioPlayer:
                 if sample:
                     call_part += sample[:note_duration_ms]
                 else:
+                    # If a sample is missing, add silence
                     call_part += AudioSegment.silent(duration=note_duration_ms)
         
         # Create the "response" part (metronome clicks)
