@@ -156,33 +156,46 @@ class EarTrainerApp(customtkinter.CTk):
             self._update_lick_display()
 
     def _update_scale_display(self):
+        """
+        Loads and displays the appropriate pre-rendered reference scale image(s).
+        - For 'low', 'middle', or 'high', shows that specific register's scale.
+        - For 'all' and 'mixed', shows the full scale.
+        """
         if hasattr(self, "scale_notation_label"):
             self.scale_notation_label.destroy()
         self.scale_notation_label = customtkinter.CTkLabel(self.scale_display_frame, text="")
         self.scale_notation_label.grid(row=1, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
 
         register_to_display = self.current_register
-        
-        if register_to_display == 'all':
+        filename = ""
+
+        if register_to_display in ["all", "mixed"]:
+            # For both 'all' and 'mixed', display the full scale.
             self.current_scale_lick = self.lick_manager.get_full_scale()
             filename = "scale_all_registers.png"
-        elif register_to_display == 'mixed' and self.current_lick:
-            used_registers = get_lick_registers(self.current_lick['lick_data'], self.lick_manager.licks)
-            self.current_scale_lick = self.lick_manager.get_combined_scale_for_registers(used_registers)
-            filename = f"scale_mixed_{'-'.join(used_registers)}_register.png"
-        else:
+
+        elif register_to_display in ["low", "middle", "high"]:
+            # For specific registers, show that register's scale.
             self.current_scale_lick = self.lick_manager.get_scale_by_register(register_to_display)
             filename = f"scale_{register_to_display}_register.png"
 
-        image_path = os.path.join("licks", "images", f"{self.current_key.upper()}_harp", self.current_scale, filename)
-        
-        if os.path.exists(image_path):
-            image_obj = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
-            self.scale_notation_label.configure(image=image_obj)
-            self.scale_notation_label.image = image_obj
+        # Proceed to load the image if a filename has been determined
+        if filename:
+            image_path = os.path.join("licks", "images", f"{self.current_key.upper()}_harp", self.current_scale, filename)
+            
+            if os.path.exists(image_path):
+                image_obj = customtkinter.CTkImage(light_image=Image.open(image_path), size=(600, 120))
+                self.scale_notation_label.configure(image=image_obj)
+                self.scale_notation_label.image = image_obj
+            else:
+                self.scale_notation_label.configure(text=f"Reference image '{filename}' not found.")
+                self.current_scale_lick = None
         else:
-            self.scale_notation_label.configure(text=f"Reference image '{filename}' not found.")
+            # Fallback to clear the display if no valid option is found
+            self.scale_notation_label.configure(image=None, text="")
             self.current_scale_lick = None
+
+
 
     def load_new_lick(self):
         lick_info = self.lick_manager.get_random_lick(register=self.current_register)
