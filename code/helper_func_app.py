@@ -1,5 +1,6 @@
 import re
 
+
 def get_lick_registers(practice_lick_data, all_licks_from_scale):
     """
     Analyzes a practice lick to determine which registers it uses by
@@ -22,12 +23,12 @@ def get_lick_registers(practice_lick_data, all_licks_from_scale):
         return []
 
     # Create a set of notes in the practice lick for efficient lookup
-    practice_notes = {note['tab'] for note in practice_lick_data}
+    practice_notes = {note["tab"] for note in practice_lick_data}
 
     # Create sets of notes for each defined scale register
-    low_scale_notes = {note['tab'] for note in all_licks_from_scale[0]['lick_data']}
-    middle_scale_notes = {note['tab'] for note in all_licks_from_scale[1]['lick_data']}
-    high_scale_notes = {note['tab'] for note in all_licks_from_scale[2]['lick_data']}
+    low_scale_notes = {note["tab"] for note in all_licks_from_scale[0]["lick_data"]}
+    middle_scale_notes = {note["tab"] for note in all_licks_from_scale[1]["lick_data"]}
+    high_scale_notes = {note["tab"] for note in all_licks_from_scale[2]["lick_data"]}
 
     found_registers = set()
 

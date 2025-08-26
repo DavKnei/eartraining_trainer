@@ -5,10 +5,12 @@ from pydub.playback import play
 import threading
 import time
 
+
 class AudioPlayer:
     """
     Handles loading audio samples and playing harmonica licks.
     """
+
     def __init__(self, samples_base_path="audio_samples"):
         self.samples_base_path = samples_base_path
         self.harmonica_samples = {}
@@ -42,18 +44,18 @@ class AudioPlayer:
         """Loads the harmonica metadata from the JSON file."""
         metadata_path = os.path.join(self.samples_base_path, "harmonica_data.json")
         try:
-            with open(metadata_path, 'r') as f:
+            with open(metadata_path, "r") as f:
                 return json.load(f)
         except FileNotFoundError:
             print(f"ERROR: Metadata file not found at {metadata_path}")
             return None
 
-    def load_harp_samples(self, key='G'):
+    def load_harp_samples(self, key="G"):
         """
         Loads all .wav samples for a specific harmonica key into memory,
         ensuring they all use a standard sample rate.
         """
-        self.harmonica_samples.clear() # Clear any previously loaded harp
+        self.harmonica_samples.clear()  # Clear any previously loaded harp
         harp_folder = f"{key.upper()}_harp"
         key_path = os.path.join(self.samples_base_path, harp_folder)
 
@@ -64,17 +66,17 @@ class AudioPlayer:
         print(f"Loading samples for {key} harmonica...")
         for filename in os.listdir(key_path):
             if filename.endswith(".wav"):
-                tab_name = filename.replace('.wav', '')
+                tab_name = filename.replace(".wav", "")
                 sample_path = os.path.join(key_path, filename)
-                
+
                 # Load the sample
                 sample = AudioSegment.from_wav(sample_path)
-                
+
                 # --- FIX: Set a standard sample rate for all harmonica notes ---
                 resampled_sample = sample.set_frame_rate(44100)
-                
+
                 self.harmonica_samples[tab_name] = resampled_sample
-        
+
         print(f"Loaded {len(self.harmonica_samples)} samples.")
         return True
 
@@ -94,8 +96,8 @@ class AudioPlayer:
         final_sequence = AudioSegment.silent(duration=0)
 
         for note in lick_data:
-            tab = note['tab']
-            duration_in_beats = note['duration']
+            tab = note["tab"]
+            duration_in_beats = note["duration"]
             note_duration_ms = int(quarter_note_duration_ms * duration_in_beats)
 
             if tab == "rest":
@@ -103,10 +105,12 @@ class AudioPlayer:
             else:
                 sample = self.harmonica_samples.get(tab)
                 if sample is None:
-                    print(f"Warning: Sample for tab '{tab}' not found. Treating as a rest.")
+                    print(
+                        f"Warning: Sample for tab '{tab}' not found. Treating as a rest."
+                    )
                     final_sequence += AudioSegment.silent(duration=note_duration_ms)
                     continue
-                
+
                 # We use the beginning of the sample up to the required duration
                 played_note = sample[:note_duration_ms]
                 final_sequence += played_note
@@ -126,21 +130,23 @@ class AudioPlayer:
         if not self.metronome_click_1 or not self.metronome_click_2:
             print("Error: Metronome sounds not loaded.")
             return
-        
+
         try:
-            beats_per_measure, _ = map(int, time_signature_str.split('/'))
+            beats_per_measure, _ = map(int, time_signature_str.split("/"))
         except (ValueError, IndexError):
-            print(f"Warning: Invalid time signature '{time_signature_str}'. Defaulting to 4/4.")
+            print(
+                f"Warning: Invalid time signature '{time_signature_str}'. Defaulting to 4/4."
+            )
             beats_per_measure = 4
 
         quarter_note_duration_ms = 60000 / bpm
-        total_duration_beats = sum(note['duration'] for note in lick_data)
+        total_duration_beats = sum(note["duration"] for note in lick_data)
 
         # Create the "call" part (the lick)
         call_part = AudioSegment.silent(duration=0)
         for note in lick_data:
-            tab = note['tab']
-            duration_in_beats = note['duration']
+            tab = note["tab"]
+            duration_in_beats = note["duration"]
             note_duration_ms = int(quarter_note_duration_ms * duration_in_beats)
 
             if tab == "rest":
@@ -152,20 +158,20 @@ class AudioPlayer:
                 else:
                     # If a sample is missing, add silence
                     call_part += AudioSegment.silent(duration=note_duration_ms)
-        
+
         # Create the "response" part (metronome clicks)
         response_part = AudioSegment.silent(duration=0)
         num_beats_total = int(total_duration_beats)
-        
+
         for i in range(num_beats_total):
             beat_in_measure = i % beats_per_measure
-            
+
             if beat_in_measure == 0:
-                click = self.metronome_click_1 # First beat
+                click = self.metronome_click_1  # First beat
             else:
-                click = self.metronome_click_2 # Other beats
-            
-            response_part += click[:int(quarter_note_duration_ms)]
+                click = self.metronome_click_2  # Other beats
+
+            response_part += click[: int(quarter_note_duration_ms)]
 
         # The loop
         self.stop_call_and_response = False
