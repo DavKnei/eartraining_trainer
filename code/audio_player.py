@@ -2,6 +2,8 @@ import os
 import json
 from pydub import AudioSegment
 from pydub.playback import play
+import threading
+import time
 
 class AudioPlayer:
     """
@@ -11,7 +13,26 @@ class AudioPlayer:
         self.samples_base_path = samples_base_path
         self.harmonica_samples = {}
         self.metadata = self._load_metadata()
+        self.metronome_click_1 = None
+        self.metronome_click_2 = None
+        self._load_metronome_sounds()
+        self.stop_call_and_response = False
         print("AudioPlayer initialized.")
+
+    def _load_metronome_sounds(self):
+        """Loads both metronome click sounds."""
+        metronome_path_1 = os.path.join(self.samples_base_path, "metronome_click1.wav")
+        metronome_path_2 = os.path.join(self.samples_base_path, "metronome_click.wav")
+
+        if os.path.exists(metronome_path_1):
+            self.metronome_click_1 = AudioSegment.from_wav(metronome_path_1)
+        else:
+            print(f"Warning: Metronome click 1 sound not found at {metronome_path_1}")
+
+        if os.path.exists(metronome_path_2):
+            self.metronome_click_2 = AudioSegment.from_wav(metronome_path_2)
+        else:
+            print(f"Warning: Metronome click 2 sound not found at {metronome_path_2}")
 
     def _load_metadata(self):
         """Loads the harmonica metadata from the JSON file."""
@@ -65,12 +86,9 @@ class AudioPlayer:
             duration_in_beats = note['duration']
             note_duration_ms = int(quarter_note_duration_ms * duration_in_beats)
 
-            # --- NEW LOGIC IS HERE ---
             if tab == "rest":
-                # If the tab is a rest, just add silence.
                 final_sequence += AudioSegment.silent(duration=note_duration_ms)
             else:
-                # Otherwise, do what we did before: find and play the sample.
                 sample = self.harmonica_samples.get(tab)
                 if sample is None:
                     print(f"Warning: Sample for tab '{tab}' not found. Treating as a rest.")
@@ -79,36 +97,66 @@ class AudioPlayer:
                 
                 played_note = sample[:note_duration_ms]
                 final_sequence += played_note
-            # --- END OF NEW LOGIC ---
 
         print(f"Playing lick at {bpm} BPM...")
         play(final_sequence)
 
+    def play_call_and_response(self, lick_data, bpm=120, time_signature_str="4/4"):
+        """
+        Plays a lick in a call-and-response loop with an accented metronome,
+        using the time signature from the lick data.
+        """
+        if not self.harmonica_samples:
+            print("Error: No harmonica samples loaded.")
+            return
 
-# --- Example of how to use this class ---
-if __name__ == "__main__":
-    # This is a test block to make sure our player works.
-    
-    # 1. Create an instance of the player
-    player = AudioPlayer()
+        if not self.metronome_click_1 or not self.metronome_click_2:
+            print("Error: Metronome sounds not loaded.")
+            return
+        
+        try:
+            beats_per_measure, _ = map(int, time_signature_str.split('/'))
+        except (ValueError, IndexError):
+            print(f"Warning: Invalid time signature '{time_signature_str}'. Defaulting to 4/4.")
+            beats_per_measure = 4
 
-    # 2. Load the samples for the harmonica we want to use (e.g., a G harp)
-    player.load_harp_samples('G')
+        quarter_note_duration_ms = 60000 / bpm
+        total_duration_beats = sum(note['duration'] for note in lick_data)
 
-    # 3. Define a sample lick to test with
-    # This is the "Simple Blues Turnaround" from your licks file
-    test_lick = [
-        {"tab": "-2", "duration": 1},
-        {"tab": "-3_p", "duration": 0.5},
-        {"tab": "rest", "duration": 0.5},
-        {"tab": "4", "duration": 0.5},
-        {"tab": "-3_p", "duration": 0.5},
-        {"tab": "rest", "duration": 0.5},
-        {"tab": "-2", "duration": 1.5}
-    ]
+        # Create the "call" part (the lick)
+        call_part = AudioSegment.silent(duration=0)
+        for note in lick_data:
+            tab = note['tab']
+            duration_in_beats = note['duration']
+            note_duration_ms = int(quarter_note_duration_ms * duration_in_beats)
 
-    # 4. Play the lick at a desired speed
-    player.play_lick(test_lick, bpm=100)
-    
-    # 5. Play it again, faster
-    player.play_lick(test_lick, bpm=160)
+            if tab == "rest":
+                call_part += AudioSegment.silent(duration=note_duration_ms)
+            else:
+                sample = self.harmonica_samples.get(tab)
+                if sample:
+                    call_part += sample[:note_duration_ms]
+                else:
+                    call_part += AudioSegment.silent(duration=note_duration_ms)
+        
+        # Create the "response" part (metronome clicks)
+        response_part = AudioSegment.silent(duration=0)
+        num_beats_total = int(total_duration_beats)
+        
+        for i in range(num_beats_total):
+            beat_in_measure = i % beats_per_measure
+            
+            if beat_in_measure == 0:
+                click = self.metronome_click_1 # First beat
+            else:
+                click = self.metronome_click_2 # Other beats
+            
+            response_part += click[:int(quarter_note_duration_ms)]
+
+        # The loop
+        self.stop_call_and_response = False
+        while not self.stop_call_and_response:
+            play(call_part)
+            if self.stop_call_and_response:
+                break
+            play(response_part)

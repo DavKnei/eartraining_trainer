@@ -4,10 +4,12 @@ from PIL import Image
 from audio_player import AudioPlayer
 from lick_manager import LickManager
 from helper_func_app import get_lick_registers
+import threading
 
 class EarTrainerApp(customtkinter.CTk):
     """
     The main application class for the Harmonica Ear Trainer.
+
     This version loads pre-rendered score images for performance and stability.
 
     Attributes
@@ -26,6 +28,10 @@ class EarTrainerApp(customtkinter.CTk):
         The selected register for filtering licks.
     tabs_visible : bool
         The state tracking whether the practice lick's tabs are currently visible.
+    call_and_response_active : bool
+        Tracks if the call and response feature is currently running.
+    call_and_response_thread : threading.Thread or None
+        Holds the thread for the call and response loop to allow the GUI to remain responsive.
     player : AudioPlayer
         An instance of the AudioPlayer for handling sound playback.
     lick_manager : LickManager
@@ -38,18 +44,20 @@ class EarTrainerApp(customtkinter.CTk):
         super().__init__()
 
         self.title("Harmonica Ear Trainer")
-        self.geometry("650x650")
+        self.geometry("650x700") # Increased height for the new button
         self.columnconfigure(0, weight=1)
 
         # State Variables
         self.current_lick = None
         self.current_lick_index = None
-        self.current_scale_lick = None # To hold the data for the displayed scale
+        self.current_scale_lick = None
         self.current_key = "G"
         self.current_scale = None
         self.current_register = "all"
         self.tabs_visible = False
-        
+        self.call_and_response_active = False
+        self.call_and_response_thread = None
+
         # Backend Components
         self.player = AudioPlayer()
         self.lick_manager = LickManager(licks_directory="licks")
@@ -91,12 +99,10 @@ class EarTrainerApp(customtkinter.CTk):
         self.scale_display_frame.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
         self.scale_display_frame.columnconfigure(1, weight=1)
         
-        # NEW: Button to play the reference scale
         self.play_scale_button = customtkinter.CTkButton(self.scale_display_frame, text="▶ Play Scale", command=self.play_current_scale, width=120)
         self.play_scale_button.grid(row=0, column=0, padx=10, pady=(5,0))
         
         customtkinter.CTkLabel(self.scale_display_frame, text="Reference Scale(s)", font=("Arial", 14)).grid(row=0, column=1, pady=(5,0))
-        # The label is created/destroyed in the update method
 
         self.lick_frame = customtkinter.CTkFrame(self)
         self.lick_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
@@ -105,7 +111,6 @@ class EarTrainerApp(customtkinter.CTk):
 
         self.lick_info_label = customtkinter.CTkLabel(self.lick_frame, text="Practice Lick", font=("Arial", 14))
         self.lick_info_label.grid(row=0, column=0, padx=10, pady=(10, 5))
-        # The label is created/destroyed in the update method
 
         controls_frame = customtkinter.CTkFrame(self)
         controls_frame.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
@@ -117,6 +122,9 @@ class EarTrainerApp(customtkinter.CTk):
         self.toggle_tabs_button = customtkinter.CTkButton(controls_frame, text="Show Tabs", command=self.toggle_tabs_visibility)
         self.toggle_tabs_button.grid(row=0, column=2, padx=5, pady=10, sticky="ew")
         
+        self.call_response_button = customtkinter.CTkButton(controls_frame, text="Start Call and Response", command=self.toggle_call_and_response)
+        self.call_response_button.grid(row=1, column=0, columnspan=3, padx=5, pady=10, sticky="ew")
+
         bpm_frame = customtkinter.CTkFrame(self)
         bpm_frame.grid(row=4, column=0, padx=10, pady=(0,10), sticky="ew")
         bpm_frame.columnconfigure(1, weight=1)
@@ -127,9 +135,6 @@ class EarTrainerApp(customtkinter.CTk):
         self.bpm_slider.set(120)
 
     def on_control_change(self, value: str):
-        """
-        Handles events from the top control dropdowns (Key, Scale, Register).
-        """
         key_changed = self.current_key != self.key_menu.get()
         scale_changed = self.current_scale != self.scale_menu.get()
         register_changed = self.current_register != self.register_menu.get()
@@ -151,9 +156,6 @@ class EarTrainerApp(customtkinter.CTk):
             self._update_lick_display()
 
     def _update_scale_display(self):
-        """
-        Loads and displays the appropriate pre-rendered reference scale image(s).
-        """
         if hasattr(self, "scale_notation_label"):
             self.scale_notation_label.destroy()
         self.scale_notation_label = customtkinter.CTkLabel(self.scale_display_frame, text="")
@@ -180,12 +182,9 @@ class EarTrainerApp(customtkinter.CTk):
             self.scale_notation_label.image = image_obj
         else:
             self.scale_notation_label.configure(text=f"Reference image '{filename}' not found.")
-            self.current_scale_lick = None # Clear if image not found
+            self.current_scale_lick = None
 
     def load_new_lick(self):
-        """
-        Fetches a new random lick and its index, then updates the UI.
-        """
         lick_info = self.lick_manager.get_random_lick(register=self.current_register)
         if lick_info:
             self.current_lick, self.current_lick_index = lick_info
@@ -197,9 +196,6 @@ class EarTrainerApp(customtkinter.CTk):
         self._update_lick_display()
 
     def _update_lick_display(self):
-        """
-        Updates the lower practice lick display by loading a pre-rendered image.
-        """
         if hasattr(self, "lick_notation_label"):
             self.lick_notation_label.destroy()
         self.lick_notation_label = customtkinter.CTkLabel(self.lick_frame, text="")
@@ -213,10 +209,11 @@ class EarTrainerApp(customtkinter.CTk):
             else:
                 display_register_str = register_info
             
-            self.lick_info_label.configure(text=f"Practice Lick (Register: {display_register_str})")
+            time_signature = self.current_lick.get('time_signature', '4/4')
+            self.lick_info_label.configure(text=f"Practice Lick (Register: {display_register_str}, Time: {time_signature})")
             
             if self.tabs_visible:
-                lick_number = self.current_lick_index - 7 # Adjusted index for new JSON structure
+                lick_number = self.current_lick_index - 7
                 filename = f"lick_{lick_number:02d}.png"
                 image_path = os.path.join("licks", "images", f"{self.current_key.upper()}_harp", self.current_scale, filename)
 
@@ -235,32 +232,41 @@ class EarTrainerApp(customtkinter.CTk):
             self.lick_notation_label.configure(text=f"No '{self.current_register}' licks in file.", font=("Arial", 20))
 
     def play_current_lick(self):
-        """
-        Plays the audio of the currently loaded practice lick.
-        """
         if self.current_lick:
             self.player.play_lick(self.current_lick['lick_data'], self.bpm_slider.get())
 
     def play_current_scale(self):
-        """
-        Plays the audio of the currently displayed reference scale.
-        """
         if self.current_scale_lick:
             self.player.play_lick(self.current_scale_lick['lick_data'], self.bpm_slider.get())
         else:
             print("No reference scale is loaded to be played.")
 
+    def toggle_call_and_response(self):
+        if self.call_and_response_active:
+            self.player.stop_call_and_response = True
+            if self.call_and_response_thread:
+                self.call_and_response_thread.join()
+            self.call_and_response_active = False
+            self.call_response_button.configure(text="Start Call and Response")
+        else:
+            if self.current_lick:
+                self.call_and_response_active = True
+                self.call_response_button.configure(text="Stop Call and Response")
+                
+                time_sig = self.current_lick.get("time_signature", "4/4")
+
+                self.call_and_response_thread = threading.Thread(
+                    target=self.player.play_call_and_response,
+                    args=(self.current_lick['lick_data'], self.bpm_slider.get()),
+                    kwargs={'time_signature_str': time_sig}
+                )
+                self.call_and_response_thread.start()
+
     def toggle_tabs_visibility(self):
-        """
-        Toggles the visibility state of the practice lick's score.
-        """
         self.tabs_visible = not self.tabs_visible
         self._update_lick_display()
     
     def update_bpm_label(self, value: float):
-        """
-        Updates the BPM label as the slider is moved.
-        """
         self.bpm_label.configure(text=f"BPM: {int(value)}")
 
 
