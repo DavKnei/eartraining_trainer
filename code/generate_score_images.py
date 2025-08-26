@@ -64,15 +64,16 @@ def generate_images_for_key(key):
         for i, lick_object in enumerate(lick_manager.licks):
             if i == 0:
                 filename = "scale_all_registers.png"
-            elif i == 1:
-                filename = "scale_low_register.png"
-            elif i == 2:
-                filename = "scale_middle_register.png"
-            elif i == 3:
-                filename = "scale_high_register.png"
-            # Indices 4, 5, 6 are now the mixed registers we already generated
-            elif i > 6:
+            elif 4 > i  > 0:  # skip mixed_
                 continue
+            elif i == 4:
+                filename = "scale_low_register.png"
+            elif i == 5:
+                filename = "scale_middle_register.png"
+            elif i == 6:
+                filename = "scale_high_register.png"
+            # Indices 1,2,3 are now the mixed registers we already generated
+            elif i > 6:
                 lick_number = i - 6
                 filename = f"lick_{lick_number:02d}.png"
             else: # Skip the manually added mixed entries

@@ -177,6 +177,7 @@ class EarTrainerApp(customtkinter.CTk):
         elif register_to_display in ["low", "middle", "high"]:
             # For specific registers, show that register's scale.
             self.current_scale_lick = self.lick_manager.get_scale_by_register(register_to_display)
+            print(register_to_display)
             filename = f"scale_{register_to_display}_register.png"
 
         # Proceed to load the image if a filename has been determined
