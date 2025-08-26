@@ -1,6 +1,7 @@
 import os
 import shutil
 import multiprocessing
+import argparse
 from lick_manager import LickManager
 from display_tabs import NotationGenerator
 
@@ -9,24 +10,30 @@ KEYS_TO_GENERATE = ["G", "A", "C", "D"]
 OUTPUT_BASE_DIR = os.path.join("licks", "images")
 
 
-def generate_images_for_key(key):
+def generate_images_for_key(key, scales_to_process):
     """
-    Generates all score images for a single, specified harmonica key.
-    This function is designed to be run as a separate process.
+    Generates score images for a single harmonica key, but only for the
+    specified list of scales.
+
+    Parameters
+    ----------
+    key : str
+        The harmonica key to process (e.g., "G").
+    scales_to_process : list
+        A list of scale names (without .json) to generate images for.
     """
     print(f"Starting process for Key: {key.upper()} Harmonica...")
 
     lick_manager = LickManager(licks_directory="licks")
     notation_generator = NotationGenerator()
 
-    available_scales = lick_manager.get_available_scales()
-
-    for scale_name in available_scales:
+    for scale_name in scales_to_process:
         print(f"  [{key.upper()}] Generating for scale: {scale_name}")
 
         lick_manager.load_licks_for_scale(scale_name)
 
         if not lick_manager.licks:
+            print(f"     ! No licks found in {scale_name}.json, skipping.")
             continue
 
         output_dir = os.path.join(OUTPUT_BASE_DIR, f"{key.upper()}_harp", scale_name)
@@ -58,10 +65,32 @@ def generate_images_for_key(key):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Generate score images for harmonica licks."
+    )
+    parser.add_argument(
+        "--scale",
+        nargs="+",
+        help="Specify one or more scale files to process (e.g., 1st_position_major). If not provided, all scales will be processed.",
+    )
+    args = parser.parse_args()
+
+    # Determine which scales to process
+    if args.scale:
+        scales_to_run = args.scale
+        print(f"Running image generation for specified scales: {', '.join(scales_to_run)}")
+    else:
+        # If no scale is specified, get all available scales
+        temp_lick_manager = LickManager(licks_directory="licks")
+        scales_to_run = temp_lick_manager.get_available_scales()
+        print("Running image generation for all available scales.")
+
+    # Create a list of arguments for the multiprocessing pool
+    process_args = [(key, scales_to_run) for key in KEYS_TO_GENERATE]
 
     print(f"Starting parallel image generation for keys: {', '.join(KEYS_TO_GENERATE)}")
 
     with multiprocessing.Pool() as pool:
-        pool.map(generate_images_for_key, KEYS_TO_GENERATE)
+        pool.starmap(generate_images_for_key, process_args)
 
     print("\n✅ All parallel processes finished. Image generation complete!")
