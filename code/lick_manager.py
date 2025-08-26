@@ -5,15 +5,14 @@ import random
 class LickManager:
     """
     Handles loading licks from a directory of scale-based JSON files.
-    The first three licks in each file are assumed to be the low, middle,
-    and high register scales, respectively.
+    Assumes a specific structure: all_scale, low, middle, high, mixed_combos, then practice licks.
     """
     def __init__(self, licks_directory="licks"):
         self.directory = licks_directory
         self.licks = []
         self.loaded_scale = None
         self.available_scales = self._discover_scales()
-
+        
         if self.available_scales:
             print(f"LickManager initialized. Found scales: {', '.join(self.available_scales)}")
             self.load_licks_for_scale(self.available_scales[0])
@@ -23,7 +22,6 @@ class LickManager:
     def _discover_scales(self):
         """Scans the licks directory and finds all available scale files."""
         try:
-            # Filter out directories, only look for .json files
             files = [f for f in os.listdir(self.directory) if f.endswith('.json') and os.path.isfile(os.path.join(self.directory, f))]
             return sorted([os.path.splitext(f)[0] for f in files])
         except FileNotFoundError:
@@ -48,12 +46,18 @@ class LickManager:
         """Returns the list of discovered scale names."""
         return self.available_scales
 
+    def get_full_scale(self):
+        """Returns the full scale, which is assumed to be the first lick (index 0)."""
+        if self.licks:
+            return self.licks[0]
+        return None
+
     def get_scale_by_register(self, register):
         """
         Returns the specific scale part based on the selected register.
-        Assumes a fixed order: low (index 0), middle (1), high (2).
+        Assumes a fixed order: all (0), low (1), middle (2), high (3).
         """
-        register_map = {"low": 0, "middle": 1, "high": 2}
+        register_map = {"low": 1, "middle": 2, "high": 3}
         index = register_map.get(register)
         
         if index is not None and len(self.licks) > index:
@@ -63,19 +67,8 @@ class LickManager:
     def get_combined_scale_for_registers(self, registers):
         """
         Combines multiple scale parts into a single lick object for display.
-        
-        Parameters
-        ----------
-        registers : list
-            A list of register names to combine (e.g., ['low', 'middle']).
-
-        Returns
-        -------
-        dict or None
-            A lick object containing the combined lick_data.
         """
         combined_data = []
-        # Ensure a consistent and logical order for the combined scale
         ordered_registers = [reg for reg in ["low", "middle", "high"] if reg in registers]
 
         for i, reg in enumerate(ordered_registers):
@@ -83,7 +76,7 @@ class LickManager:
             if scale_part:
                 combined_data.extend(scale_part['lick_data'])
                 if i < len(ordered_registers) - 1:
-                    combined_data.append({"tab": "rest", "duration": 2}) # Half note rest
+                    combined_data.append({"tab": "rest", "duration": 2})
         
         if not combined_data:
             return None
@@ -98,16 +91,13 @@ class LickManager:
         """
         Returns a random practice lick and its original index, optionally
         filtered by register.
-
-        Returns
-        -------
-        tuple or None
-            A tuple containing the lick object and its index, or None.
         """
-        if len(self.licks) <= 3:
+        # Practice licks start after the scale definitions (all, low, mid, high, and 3 mixed)
+        PRACTICE_LICK_START_INDEX = 7
+        if len(self.licks) <= PRACTICE_LICK_START_INDEX:
             return None 
 
-        selectable_licks_with_indices = list(enumerate(self.licks))[3:]
+        selectable_licks_with_indices = list(enumerate(self.licks))[PRACTICE_LICK_START_INDEX:]
         if not selectable_licks_with_indices:
             return None
 
